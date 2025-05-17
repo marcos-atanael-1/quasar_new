@@ -164,17 +164,16 @@
   opacity: 1;
 }
 
+/* Form Sections */
 .form-section {
-  padding-bottom: 2rem;
-  margin-bottom: 2rem;
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
+  padding: 0 0 2rem;
 }
 
 .form-section:last-child {
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0;
 }
 
 .form-section h3 {
@@ -182,10 +181,8 @@
   font-weight: 600;
   color: #1a1a1a;
   margin-bottom: 2rem;
-  padding-bottom: 0.75rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid #e5e7eb;
-  width: 100%;
-  text-align: left;
 }
 
 .form-group {
@@ -221,12 +218,8 @@
 /* Materials Section */
 .materials-container {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  position: relative;
 }
 
 .materials-list {
@@ -308,7 +301,7 @@
 
 .material-first-row {
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: 200px 1fr;
   gap: 1.25rem;
   align-items: center;
 }
@@ -385,10 +378,8 @@
 
 /* Questions Section */
 .questions-section {
-  margin-top: 2rem;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .question-card {
@@ -438,8 +429,7 @@
 /* Assignment Section */
 .assignment-section {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .select-container {
@@ -507,22 +497,6 @@
 
   .modal-content-wrapper {
     height: calc(98vh - 130px);
-  }
-
-  .form-section,
-  .materials-container,
-  .questions-section,
-  .assignment-section {
-    max-width: 1000px;
-  }
-}
-
-@media (max-width: 1200px) {
-  .form-section,
-  .materials-container,
-  .questions-section,
-  .assignment-section {
-    max-width: 800px;
   }
 }
 
