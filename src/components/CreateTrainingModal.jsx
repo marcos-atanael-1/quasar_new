@@ -20,6 +20,22 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './CreateTrainingModal.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const APP_MODE = import.meta.env.VITE_APP_MODE;
+
+// Mock data for DEV environment
+const mockAreas = [
+  { Id: 1, Name: 'Produção' },
+  { Id: 2, Name: 'Manutenção' },
+  { Id: 3, Name: 'Qualidade' },
+  { Id: 4, Name: 'Logística' }
+];
+
+const mockUsers = [
+  { Id: 1, first_name: 'João', last_name: 'Silva', email: 'joao@example.com' },
+  { Id: 2, first_name: 'Maria', last_name: 'Santos', email: 'maria@example.com' },
+  { Id: 3, first_name: 'Pedro', last_name: 'Oliveira', email: 'pedro@example.com' },
+  { Id: 4, first_name: 'Ana', last_name: 'Costa', email: 'ana@example.com' }
+];
 
 const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
   const [activeSection, setActiveSection] = useState('basic');
@@ -50,52 +66,48 @@ const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
     questions: []
   });
 
-  // Buscar áreas do backend
   useEffect(() => {
-    const fetchAreas = async () => {
-      if (!isOpen) return;
-      
+    if (!isOpen) return;
+
+    const fetchData = async () => {
       setLoadingAreas(true);
+      setLoadingUsers(true);
+
       try {
-        const response = await fetch(`${API_URL}/api/areas/`);
-        if (!response.ok) {
-          throw new Error("Erro ao carregar áreas.");
+        if (APP_MODE === 'PRD') {
+          // Production mode - fetch from API
+          const areasResponse = await fetch(`${API_URL}/api/areas/`);
+          if (!areasResponse.ok) {
+            throw new Error("Erro ao carregar áreas.");
+          }
+          const areasData = await areasResponse.json();
+          setAreas(Array.isArray(areasData) ? areasData : []);
+
+          const usersResponse = await fetch(`${API_URL}/api/users/`);
+          if (!usersResponse.ok) {
+            throw new Error("Erro ao carregar usuários.");
+          }
+          const usersData = await usersResponse.json();
+          setUsers(Array.isArray(usersData) ? usersData : []);
+        } else {
+          // Development mode - use mock data
+          setAreas(mockAreas);
+          setUsers(mockUsers);
         }
-        const data = await response.json();
-        setAreas(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error("Erro ao buscar áreas:", error);
-        setAreas([]);
+        console.error("Erro ao buscar dados:", error);
+        // In DEV mode, still set mock data even if API calls fail
+        if (APP_MODE !== 'PRD') {
+          setAreas(mockAreas);
+          setUsers(mockUsers);
+        }
       } finally {
         setLoadingAreas(false);
-      }
-    };
-
-    fetchAreas();
-  }, [isOpen]);
-
-  // Buscar usuários do backend
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (!isOpen) return;
-      
-      setLoadingUsers(true);
-      try {
-        const response = await fetch(`${API_URL}/api/users/`);
-        if (!response.ok) {
-          throw new Error("Erro ao carregar usuários.");
-        }
-        const data = await response.json();
-        setUsers(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Erro ao buscar usuários:", error);
-        setUsers([]);
-      } finally {
         setLoadingUsers(false);
       }
     };
 
-    fetchUsers();
+    fetchData();
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -307,14 +319,12 @@ const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
       };
     });
 
-    // Atualizar a posição do scroll após a reorganização
     setTimeout(() => {
       updateScrollThumbPosition();
     }, 0);
   };
 
   const onDragStart = () => {
-    // Adicionar classe ao body para mudar o cursor durante o arrastar
     document.body.classList.add('dragging');
   };
 
@@ -351,7 +361,6 @@ const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
     updateScrollThumbPosition();
   };
 
-  // Atualizar a posição do thumb quando os materiais mudarem
   useEffect(() => {
     if (materialsListRef.current) {
       updateScrollThumbPosition();
@@ -365,17 +374,6 @@ const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
     { id: 'assignment', name: 'Atribuição' },
     { id: 'evaluation', name: 'Avaliação Final' }
   ];
-
-  const handleEmptyListMessage = () => {
-    if (formData.materials.length === 0) {
-      return (
-        <div className="empty-materials-message">
-          Nenhum material adicionado. Clique no botão abaixo para adicionar materiais.
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="modal-overlay">
