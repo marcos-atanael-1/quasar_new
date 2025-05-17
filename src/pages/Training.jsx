@@ -26,6 +26,79 @@ import {
 import './Training.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const APP_MODE = import.meta.env.VITE_APP_MODE;
+
+// Mock data for DEV environment
+const mockTrainings = [
+  {
+    id: 1,
+    name: 'Introdução ao 5S',
+    description: 'Fundamentos e princípios do programa 5S',
+    image: 'https://i.ibb.co/TdnPT6v/icon-dashboard.png',
+    participants: 24,
+    lastUpdate: '15/06/2025',
+    score: 4.5,
+    documents: 5,
+    status: 'active'
+  },
+  {
+    id: 2,
+    name: 'Auditoria 5S',
+    description: 'Como realizar auditorias efetivas',
+    image: 'https://i.ibb.co/DPRSYryh/icon-training.png',
+    participants: 18,
+    lastUpdate: '14/06/2025',
+    score: 4.8,
+    documents: 3,
+    status: 'draft'
+  },
+  {
+    id: 3,
+    name: 'Gestão Visual',
+    description: 'Implementação de controles visuais',
+    image: 'https://i.ibb.co/TdnPT6v/icon-dashboard.png',
+    participants: 32,
+    lastUpdate: '13/06/2025',
+    score: 4.2,
+    documents: 7,
+    status: 'active'
+  }
+];
+
+const mockFiles = [
+  {
+    id: 1,
+    name: 'Apresentação 5S.pdf',
+    training: 'Introdução ao 5S',
+    type: 'pdf',
+    size: '2.4 MB',
+    uploadedAt: '15/06/2025'
+  },
+  {
+    id: 2,
+    name: 'Manual do Programa.docx',
+    training: 'Introdução ao 5S',
+    type: 'doc',
+    size: '1.8 MB',
+    uploadedAt: '14/06/2025'
+  },
+  {
+    id: 3,
+    name: 'Planilha de Auditoria.xlsx',
+    training: 'Auditoria 5S',
+    type: 'excel',
+    size: '512 KB',
+    uploadedAt: '13/06/2025'
+  },
+  {
+    id: 4,
+    name: 'Vídeo Explicativo.mp4',
+    training: 'Gestão Visual',
+    type: 'video',
+    size: '45.2 MB',
+    uploadedAt: '12/06/2025'
+  }
+];
 
 const Training = () => {
   const navigate = useNavigate();
@@ -37,106 +110,45 @@ const Training = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Buscar dados de treinamentos da API
   useEffect(() => {
-    const fetchTrainings = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const response = await fetch(`${API_URL}/api/trainings/`);
-        if (!response.ok) {
-          throw new Error('Erro ao buscar treinamentos');
+        if (APP_MODE === 'PRD') {
+          // Production mode - fetch from API
+          const response = await fetch(`${API_URL}/api/trainings/`);
+          if (!response.ok) {
+            throw new Error('Erro ao buscar treinamentos');
+          }
+          const data = await response.json();
+          setTrainings(data);
+          
+          // Fetch files from API
+          const filesResponse = await fetch(`${API_URL}/api/trainings/files`);
+          if (!filesResponse.ok) {
+            throw new Error('Erro ao buscar arquivos');
+          }
+          const filesData = await filesResponse.json();
+          setFiles(filesData);
+        } else {
+          // Development mode - use mock data
+          setTrainings(mockTrainings);
+          setFiles(mockFiles);
         }
-        const data = await response.json();
-        setTrainings(data);
-        setLoading(false);
       } catch (err) {
-        console.error('Erro ao buscar treinamentos:', err);
+        console.error('Erro:', err);
         setError(err.message);
+        // In DEV mode, still set mock data even if API call fails
+        if (APP_MODE !== 'PRD') {
+          setTrainings(mockTrainings);
+          setFiles(mockFiles);
+        }
+      } finally {
         setLoading(false);
-        // Se a API não estiver funcionando, usar dados mockados
-        setTrainings([
-          {
-            id: 1,
-            name: 'Introdução ao 5S',
-            description: 'Fundamentos e princípios do programa 5S',
-            image: 'https://i.ibb.co/TdnPT6v/icon-dashboard.png',
-            participants: 24,
-            lastUpdate: '15/06/2025',
-            score: 4.5,
-            documents: 5,
-            status: 'active'
-          },
-          {
-            id: 2,
-            name: 'Auditoria 5S',
-            description: 'Como realizar auditorias efetivas',
-            image: 'https://i.ibb.co/DPRSYryh/icon-training.png',
-            participants: 18,
-            lastUpdate: '14/06/2025',
-            score: 4.8,
-            documents: 3,
-            status: 'draft'
-          },
-          {
-            id: 3,
-            name: 'Gestão Visual',
-            description: 'Implementação de controles visuais',
-            image: 'https://i.ibb.co/TdnPT6v/icon-dashboard.png',
-            participants: 32,
-            lastUpdate: '13/06/2025',
-            score: 4.2,
-            documents: 7,
-            status: 'active'
-          }
-        ]);
       }
     };
 
-    // Buscar arquivos de todos os treinamentos
-    const fetchFiles = async () => {
-      try {
-        // Implementar quando necessário ou usar dados mockados por enquanto
-        setFiles([
-          {
-            id: 1,
-            name: 'Apresentação 5S.pdf',
-            training: 'Introdução ao 5S',
-            type: 'pdf',
-            size: '2.4 MB',
-            uploadedAt: '15/06/2025'
-          },
-          {
-            id: 2,
-            name: 'Manual do Programa.docx',
-            training: 'Introdução ao 5S',
-            type: 'doc',
-            size: '1.8 MB',
-            uploadedAt: '14/06/2025'
-          },
-          {
-            id: 3,
-            name: 'Planilha de Auditoria.xlsx',
-            training: 'Auditoria 5S',
-            type: 'excel',
-            size: '512 KB',
-            uploadedAt: '13/06/2025'
-          },
-          {
-            id: 4,
-            name: 'Vídeo Explicativo.mp4',
-            training: 'Gestão Visual',
-            type: 'video',
-            size: '45.2 MB',
-            uploadedAt: '12/06/2025'
-          }
-        ]);
-      } catch (err) {
-        console.error('Erro ao buscar arquivos:', err);
-      }
-    };
-
-    fetchTrainings();
-    fetchFiles();
+    fetchData();
   }, []);
 
   const handleLogout = () => {
@@ -214,55 +226,58 @@ const Training = () => {
     try {
       setLoading(true);
       
-      // Criar FormData para envio de arquivos
-      const form = new FormData();
-      
-      // Adicionar campos básicos
-      form.append('title', formData.title);
-      form.append('description', formData.description);
-      form.append('evaluation_type', formData.evaluationType);
-      form.append('min_score', formData.minScore);
-      if (formData.deadline) {
-        form.append('deadline', formData.deadline);
-      }
-      
-      // Adicionar imagem de capa se existir
-      if (formData.coverImage) {
-        form.append('cover_image', formData.coverImage);
-      }
-      
-      // Adicionar materiais como JSON
-      form.append('materials', JSON.stringify(formData.materials || []));
-      
-      // Adicionar questões como JSON
-      form.append('questions', JSON.stringify(formData.questions || []));
-      
-      // Adicionar usuários e grupos atribuídos como JSON
-      form.append('assigned_users', JSON.stringify(formData.assignedUsers || []));
-      form.append('assigned_groups', JSON.stringify(formData.assignedGroups || []));
+      if (APP_MODE === 'PRD') {
+        // Production mode - send to API
+        const form = new FormData();
+        form.append('title', formData.title);
+        form.append('description', formData.description);
+        form.append('evaluation_type', formData.evaluationType);
+        form.append('min_score', formData.minScore);
+        if (formData.deadline) {
+          form.append('deadline', formData.deadline);
+        }
+        if (formData.coverImage) {
+          form.append('cover_image', formData.coverImage);
+        }
+        form.append('materials', JSON.stringify(formData.materials || []));
+        form.append('questions', JSON.stringify(formData.questions || []));
+        form.append('assigned_users', JSON.stringify(formData.assignedUsers || []));
+        form.append('assigned_groups', JSON.stringify(formData.assignedGroups || []));
 
-      // Enviar para a API
-      const response = await fetch(`${API_URL}/api/trainings/`, {
-        method: 'POST',
-        body: form,
-      });
+        const response = await fetch(`${API_URL}/api/trainings/`, {
+          method: 'POST',
+          body: form,
+        });
 
-      if (!response.ok) {
-        throw new Error('Erro ao criar treinamento');
+        if (!response.ok) {
+          throw new Error('Erro ao criar treinamento');
+        }
+
+        const updatedResponse = await fetch(`${API_URL}/api/trainings/`);
+        const updatedData = await updatedResponse.json();
+        setTrainings(updatedData);
+      } else {
+        // Development mode - simulate creation
+        const newTraining = {
+          id: trainings.length + 1,
+          name: formData.title,
+          description: formData.description,
+          image: 'https://i.ibb.co/TdnPT6v/icon-dashboard.png',
+          participants: 0,
+          lastUpdate: new Date().toLocaleDateString(),
+          score: 0,
+          documents: 0,
+          status: 'draft'
+        };
+        setTrainings([...trainings, newTraining]);
       }
-
-      // Atualizar a lista de treinamentos
-      const updatedResponse = await fetch(`${API_URL}/api/trainings/`);
-      const updatedData = await updatedResponse.json();
-      setTrainings(updatedData);
       
       setIsModalOpen(false);
-      setLoading(false);
     } catch (err) {
       console.error('Erro ao criar treinamento:', err);
-      setLoading(false);
-      // Tratar o erro adequadamente na interface
       alert(`Erro ao criar treinamento: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -273,21 +288,25 @@ const Training = () => {
     
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/api/trainings/${id}`, {
-        method: 'DELETE',
-      });
       
-      if (!response.ok) {
-        throw new Error('Erro ao excluir treinamento');
+      if (APP_MODE === 'PRD') {
+        // Production mode - delete from API
+        const response = await fetch(`${API_URL}/api/trainings/${id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) {
+          throw new Error('Erro ao excluir treinamento');
+        }
       }
       
-      // Atualizar a lista após excluir
+      // Update state in both modes
       setTrainings(trainings.filter(training => training.id !== id));
-      setLoading(false);
     } catch (err) {
       console.error('Erro ao excluir treinamento:', err);
-      setLoading(false);
       alert(`Erro ao excluir treinamento: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -299,19 +318,19 @@ const Training = () => {
         <div className="training-header">
           <div className="header-left">
             <h1 className="training-title">Treinamentos</h1>
-             <p className="training-subtitle">Gerencie e acompanhe os treinamentos do programa 5S</p>
+            <p className="training-subtitle">Gerencie e acompanhe os treinamentos do programa 5S</p>
           </div>
           <div className="header-actions">
-                <div className="search-box">
-                  <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Pesquisar treinamentos..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <button 
+            <div className="search-box">
+              <FontAwesomeIcon icon={faSearch} className="search-icon" />
+              <input
+                type="text"
+                placeholder="Pesquisar treinamentos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <button 
               className="create-training-btn"
               onClick={() => setIsModalOpen(true)}
             >
@@ -371,12 +390,7 @@ const Training = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {trainings
-                    .filter(training => 
-                      training.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      training.description?.toLowerCase().includes(searchTerm.toLowerCase())
-                    )
-                    .map(training => (
+                  {filteredTrainings.map(training => (
                     <tr key={training.id}>
                       <td>
                         <div className="training-name-cell">
@@ -454,12 +468,7 @@ const Training = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {files
-                    .filter(file =>
-                      file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      file.training.toLowerCase().includes(searchTerm.toLowerCase())
-                    )
-                    .map(file => (
+                  {filteredFiles.map(file => (
                     <tr key={file.id}>
                       <td>
                         <div className="file-name-cell">
