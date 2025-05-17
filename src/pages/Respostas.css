@@ -1,0 +1,335 @@
+.respostas-container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  padding-top: 80px;
+  position: relative;
+}
+
+.respostas-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cpattern id='pattern' x='0' y='0' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='10' cy='10' r='2' fill='%23888888'%3E%3C/circle%3E%3Ccircle cx='40' cy='30' r='3' fill='%23888888'%3E%3C/circle%3E%3Ccircle cx='70' cy='60' r='2' fill='%23888888'%3E%3C/circle%3E%3Ccircle cx='20' cy='80' r='4' fill='%23888888'%3E%3C/circle%3E%3Ccircle cx='90' cy='20' r='2' fill='%23888888'%3E%3C/circle%3E%3Cpath d='M10,10 L40,30 L70,60 L20,80 L90,20 Z' stroke='%23888888' stroke-width='0.5' fill='none'%3E%3C/path%3E%3C/pattern%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23pattern)'%3E%3C/rect%3E%3C/svg%3E");
+  z-index: 0;
+  pointer-events: none;
+}
+
+.respostas-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Back Button Styles */
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.back-button:hover {
+  color: #9932cc;
+}
+
+/* Loading state */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.loading-state .loading-icon {
+  font-size: 2.5rem;
+  color: #9932cc;
+  margin-bottom: 1rem;
+}
+
+.loading-state p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Error state */
+.error-state {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.error-state p {
+  font-size: 1.1rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.reload-button {
+  background-color: #9932cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Checklist Form */
+.checklist-form {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.form-header {
+  padding: 2rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.checklist-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.8rem;
+  white-space: nowrap;
+}
+
+.checklist-description {
+  color: #6b7280;
+  line-height: 1.5;
+  white-space: nowrap;
+  margin-top: 0.5rem;
+}
+
+.questions-list {
+  padding: 2rem;
+}
+
+.question-card {
+  background-color: #f9fafb;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.question-text {
+  margin-bottom: 1rem;
+}
+
+.question-text h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.evidence-required {
+  display: inline-block;
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.question-answer {
+  margin-bottom: 1rem;
+}
+
+.text-input,
+.select-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.text-input:focus,
+.select-input:focus {
+  outline: none;
+  border-color: #9932cc;
+  box-shadow: 0 0 0 3px rgba(153, 50, 204, 0.1);
+}
+
+.question-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-group {
+  display: flex;
+  align-items: center;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-button:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.action-button.camera:hover {
+  color: #9932cc;
+}
+
+.action-button.comment:hover {
+  color: #3b82f6;
+}
+
+.evidence-preview {
+  margin-top: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.preview-header h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.remove-evidence {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.preview-image-container {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.comment-box {
+  margin-top: 1.5rem;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #9932cc;
+  box-shadow: 0 0 0 3px rgba(153, 50, 204, 0.1);
+}
+
+.form-actions {
+  padding: 1.5rem 2rem;
+  background-color: #f9fafb;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #9932cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #8a2be2;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .respostas-content {
+    padding: 1.5rem;
+  }
+  
+  .form-header,
+  .questions-list {
+    padding: 1.5rem;
+  }
+  
+  .checklist-title {
+    font-size: 1.5rem;
+  }
+  
+  .question-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .action-button {
+    width: 100%;
+    justify-content: center;
+  }
+} 
