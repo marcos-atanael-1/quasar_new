@@ -67,9 +67,9 @@ const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
   });
 
   useEffect(() => {
-    if (!isOpen) return;
-
     const fetchData = async () => {
+      if (!isOpen) return;
+
       setLoadingAreas(true);
       setLoadingUsers(true);
 
@@ -109,6 +109,12 @@ const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
 
     fetchData();
   }, [isOpen]);
+
+  useEffect(() => {
+    if (materialsListRef.current) {
+      updateScrollThumbPosition();
+    }
+  }, [formData.materials]);
 
   if (!isOpen) return null;
 
@@ -360,12 +366,6 @@ const CreateTrainingModal = ({ isOpen, onClose, onSave }) => {
   const handleScroll = () => {
     updateScrollThumbPosition();
   };
-
-  useEffect(() => {
-    if (materialsListRef.current) {
-      updateScrollThumbPosition();
-    }
-  }, [formData.materials]);
 
   const sections = [
     { id: 'basic', name: 'Informações Básicas' },
